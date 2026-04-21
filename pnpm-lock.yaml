@@ -54,7 +54,11 @@ importers:
         specifier: 4.1.4
         version: 4.1.4(@types/node@25.6.0)(jiti@2.6.1)(yaml@2.8.3)
 
-  packages/dts-minify-lite: {}
+  packages/dts-minify-lite:
+    devDependencies:
+      rolldown-plugin-dts-minify-lite:
+        specifier: 0.5.0
+        version: 0.5.0(rolldown@1.0.0-rc.16)
 
   packages/rolldown-plugin-dts-minify-lite:
     dependencies:
@@ -1385,6 +1389,11 @@ packages:
     resolution: {integrity: sha512-3JmVl5hMGtJ3kMmB3zi3DL25KfkCEyy3Tw7Gmw7z5w8M9WlwoPFnIvwChzu1+cF3iaK3sp18hhPz8ANeimdJfA==}
     engines: {node: '>= 0.4'}
     hasBin: true
+
+  rolldown-plugin-dts-minify-lite@0.5.0:
+    resolution: {integrity: sha512-Gq0aSwPcgj1Qd+WblzRxnQ+a9NTcaKLKmQOSOj50+98Ge/lKgfuX8wjm0yLzaq2/JXBqudND+jIn8ebgn/RhBg==}
+    peerDependencies:
+      rolldown: '>=1.0.0-rc.1'
 
   rolldown-plugin-dts@0.23.2:
     resolution: {integrity: sha512-PbSqLawLgZBGcOGT3yqWBGn4cX+wh2nt5FuBGdcMHyOhoukmjbhYAl8NT9sE4U38Cm9tqLOIQeOrvzeayM0DLQ==}
@@ -3266,6 +3275,11 @@ snapshots:
       object-keys: 1.1.1
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
+
+  rolldown-plugin-dts-minify-lite@0.5.0(rolldown@1.0.0-rc.16):
+    dependencies:
+      dts-minify-lite: 0.5.0
+      rolldown: 1.0.0-rc.16
 
   rolldown-plugin-dts@0.23.2(rolldown@1.0.0-rc.16)(typescript@6.0.3):
     dependencies:

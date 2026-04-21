@@ -35,5 +35,8 @@
     "build": "tsdown",
     "dev": "tsdown --watch",
     "prepublishOnly": "pnpm build"
+  },
+  "devDependencies": {
+    "rolldown-plugin-dts-minify-lite": "0.5.0"
   }
 }

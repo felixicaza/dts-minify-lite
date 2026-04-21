@@ -1,5 +1,5 @@
 import { defineConfig } from 'tsdown'
-import { rolldownPluginDtsMinifyLite } from '../rolldown-plugin-dts-minify-lite/src/index.ts'
+import { rolldownPluginDtsMinifyLite } from 'rolldown-plugin-dts-minify-lite'
 
 export default defineConfig({
   entry: 'src/index.ts',
