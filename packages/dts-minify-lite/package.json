@@ -1,6 +1,6 @@
 {
   "name": "dts-minify-lite",
-  "version": "0.0.0",
+  "version": "0.5.0",
   "description": "A lightweight and zero dependency minifier for TypeScript declaration files (.d.ts).",
   "keywords": [
     "dts",
