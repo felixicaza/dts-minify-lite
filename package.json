@@ -12,6 +12,7 @@
     "lint:fix": "eslint . --fix",
     "prepare": "simple-git-hooks",
     "release:dts": "pnpm -C packages/dts-minify-lite exec bumpp --tag \"dts-minify-lite@%s\" --commit \"release(dts-minify-lite): %s\" --no-push",
+    "release:plugin": "pnpm -C packages/rolldown-plugin-dts-minify-lite exec bumpp --tag \"rolldown-plugin-dts-minify-lite@%s\" --commit \"release(rolldown-plugin-dts-minify-lite): %s\" --no-push",
     "test": "vitest",
     "typecheck": "tsc --noEmit"
   },
