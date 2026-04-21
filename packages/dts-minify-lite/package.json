@@ -7,7 +7,7 @@
     "minify",
     "typescript"
   ],
-  "homepage": "https://github.com/felixicaza/dts-minify-lite#readme",
+  "homepage": "https://github.com/felixicaza/dts-minify-lite/tree/main/packages/dts-minify-lite#readme",
   "bugs": {
     "url": "https://github.com/felixicaza/dts-minify-lite/issues"
   },
