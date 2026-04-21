@@ -1,0 +1,41 @@
+{
+  "name": "dts-minify-lite",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Monorepo for dts-minify-lite, a lightweight and zero dependency minifier for TypeScript declaration files (.d.ts).",
+  "author": "Felix Icaza",
+  "type": "module",
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev": "pnpm -r dev",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prepare": "simple-git-hooks",
+    "release:dts": "pnpm -C packages/dts-minify-lite exec bumpp --tag \"dts-minify-lite@%s\" --commit \"release(dts-minify-lite): %s\" --no-push",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm nano-staged"
+  },
+  "nano-staged": {
+    "*": "pnpm lint:fix"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "@types/node": "25.6.0",
+    "bumpp": "11.0.1",
+    "eslint": "^9.39.4",
+    "eslint-plugin-jsonc": "3.1.2",
+    "eslint-plugin-package-json": "0.91.1",
+    "eslint-plugin-yml": "3.3.1",
+    "globals": "17.5.0",
+    "jiti": "2.6.1",
+    "nano-staged": "1.0.2",
+    "neostandard": "0.13.0",
+    "simple-git-hooks": "2.13.1",
+    "tsdown": "0.21.9",
+    "typescript": "6.0.3",
+    "vitest": "4.1.4"
+  }
+}

@@ -1,0 +1,71 @@
+name: Tests
+
+on:
+   push:
+      branches:
+         - main
+
+   pull_request:
+      branches:
+         - main
+
+jobs:
+   lint:
+      if: github.actor != 'dependabot[bot]' && !startsWith(github.head_ref, 'dependabot/')
+      runs-on: ubuntu-latest
+      steps:
+         - uses: actions/checkout@v6
+
+         - name: Install pnpm
+           uses: pnpm/action-setup@v5
+           with:
+              version: latest
+
+         - name: Set node
+           uses: actions/setup-node@v6
+           with:
+              node-version: lts/*
+
+         - name: Install
+           run: pnpm install --no-frozen-lockfile
+
+         - name: Build
+           run: pnpm build
+
+         - name: Lint
+           run: pnpm lint
+
+         - name: Typecheck
+           run: pnpm typecheck
+
+   test:
+      if: github.actor != 'dependabot[bot]' && !startsWith(github.head_ref, 'dependabot/')
+      runs-on: ${{ matrix.os }}
+
+      strategy:
+         matrix:
+            node: [lts/*]
+            os: [ubuntu-latest, windows-latest, macos-latest]
+         fail-fast: false
+
+      steps:
+         - uses: actions/checkout@v6
+
+         - name: Install pnpm
+           uses: pnpm/action-setup@v5
+           with:
+              version: latest
+
+         - name: Set node
+           uses: actions/setup-node@v6
+           with:
+              node-version: lts/*
+
+         - name: Install
+           run: pnpm install --no-frozen-lockfile
+
+         - name: Build
+           run: pnpm build
+
+         - name: Test
+           run: pnpm test
