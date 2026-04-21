@@ -23,10 +23,10 @@
     "*": "pnpm lint:fix"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.4",
+    "@eslint/js": "9.39.4",
     "@types/node": "25.6.0",
     "bumpp": "11.0.1",
-    "eslint": "^9.39.4",
+    "eslint": "9.39.4",
     "eslint-plugin-jsonc": "3.1.2",
     "eslint-plugin-package-json": "0.91.1",
     "eslint-plugin-yml": "3.3.1",
@@ -37,6 +37,6 @@
     "simple-git-hooks": "2.13.1",
     "tsdown": "0.21.9",
     "typescript": "6.0.3",
-    "vitest": "4.1.4"
+    "vitest": "4.1.5"
   }
 }
