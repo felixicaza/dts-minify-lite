@@ -1,6 +1,6 @@
 {
   "name": "rolldown-plugin-dts-minify-lite",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Rolldown plugin for dts-minify-lite, a lightweight and zero dependency minifier for TypeScript declaration files (.d.ts).",
   "keywords": [
     "rolldown",
