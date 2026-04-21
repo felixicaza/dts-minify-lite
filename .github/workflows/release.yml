@@ -92,9 +92,37 @@ jobs:
                 echo "Version not published yet: ${PKG}@${VER}. Publishing."
               fi
 
+         - name: Resolve changelog range
+           if: steps.npm_check.outputs.exists != 'true'
+           id: changelog_range
+           shell: bash
+           run: |
+              CURRENT_TAG="${{ github.ref_name }}"
+              PKG="${{ steps.tag.outputs.pkg_name }}"
+
+              PREV_TAG="$(
+                git tag --list "${PKG}@*" --sort=-v:refname \
+                | grep -Fxv "${CURRENT_TAG}" \
+                | head -n 1 || true
+              )"
+
+              if [[ -n "${PREV_TAG}" ]]; then
+                FROM_REF="${PREV_TAG}"
+                echo "Previous package tag found: ${FROM_REF}"
+              else
+                FROM_REF="$(git rev-list --max-parents=0 HEAD | tail -n 1)"
+                echo "No previous package tag found. Using first commit: ${FROM_REF}"
+              fi
+
+              echo "from_ref=${FROM_REF}" >> "$GITHUB_OUTPUT"
+              echo "to_ref=${CURRENT_TAG}" >> "$GITHUB_OUTPUT"
+
          - name: Generate changelog/release notes
            if: steps.npm_check.outputs.exists != 'true'
-           run: pnpx changelogithub
+           run: |
+              pnpx changelogithub@14.0.0 \
+                --from "${{ steps.changelog_range.outputs.from_ref }}" \
+                --to "${{ steps.changelog_range.outputs.to_ref }}"
            env:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
