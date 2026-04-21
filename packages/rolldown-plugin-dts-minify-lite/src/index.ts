@@ -1,3 +1,6 @@
+import { readdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { dirname, resolve } from 'node:path'
+
 import type { MinifyOptions } from 'dts-minify-lite'
 import type { OutputAsset, OutputBundle, OutputChunk, Plugin } from 'rolldown'
 
@@ -63,6 +66,80 @@ function minifyDeclarationAssetSource(source: OutputAsset['source'], minifier: M
   return utf8Encoder.encode(minifiedText)
 }
 
+function isErrnoException(error: unknown): error is NodeJS.ErrnoException {
+  return typeof error === 'object' && error !== null && 'code' in error
+}
+
+async function collectFilesRecursively(rootDir: string, currentDir = rootDir): Promise<string[]> {
+  const entries = await readdir(currentDir, { withFileTypes: true })
+  const files: string[] = []
+
+  for (const entry of entries) {
+    const absolutePath = resolve(currentDir, entry.name)
+
+    if (entry.isDirectory()) {
+      const nested = await collectFilesRecursively(rootDir, absolutePath)
+      files.push(...nested)
+      continue
+    }
+
+    files.push(absolutePath)
+  }
+
+  return files
+}
+
+function resolveOutputDirectory(outputOptions: unknown) {
+  if (!outputOptions || typeof outputOptions !== 'object') {
+    return undefined
+  }
+
+  const candidate = outputOptions as { dir?: string, file?: string }
+
+  if (typeof candidate.dir === 'string' && candidate.dir.length > 0) {
+    return candidate.dir
+  }
+
+  if (typeof candidate.file === 'string' && candidate.file.length > 0) {
+    return dirname(candidate.file)
+  }
+
+  return undefined
+}
+
+async function postProcessDeclarationFilesOnDisk(outputDir: string, minifier: Minifier, options?: MinifyOptions) {
+  try {
+    const files = await collectFilesRecursively(outputDir)
+
+    await Promise.all(files.map(async (absolutePath) => {
+      const normalizedPath = absolutePath.replaceAll('\\', '/')
+      const fileName = normalizedPath.split('/').at(-1) ?? ''
+
+      if (DECLARATION_MAP_FILE_PATTERN.test(fileName)) {
+        await rm(absolutePath, { force: true })
+        return
+      }
+
+      if (!DECLARATION_FILE_PATTERN.test(fileName)) {
+        return
+      }
+
+      const originalText = await readFile(absolutePath, 'utf8')
+      const minifiedText = minifyDeclarationText(originalText, minifier, options)
+
+      if (minifiedText !== originalText) {
+        await writeFile(absolutePath, minifiedText, 'utf8')
+      }
+    }))
+  } catch (error) {
+    if (isErrnoException(error) && error.code === 'ENOENT') {
+      return
+    }
+
+    throw error
+  }
+}
+
 export function rolldownPluginDtsMinifyLite(options?: MinifyOptions): Plugin {
   const minifier = createMinifier()
 
@@ -73,6 +150,18 @@ export function rolldownPluginDtsMinifyLite(options?: MinifyOptions): Plugin {
       handler(_outputOptions, bundle) {
         minifyDeclarationOutputs(bundle, minifier, options)
         removeDeclarationMapFiles(bundle)
+      }
+    },
+    writeBundle: {
+      order: 'post',
+      async handler(outputOptions) {
+        const outputDir = resolveOutputDirectory(outputOptions)
+
+        if (!outputDir) {
+          return
+        }
+
+        await postProcessDeclarationFilesOnDisk(outputDir, minifier, options)
       }
     }
   }
