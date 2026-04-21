@@ -1,4 +1,4 @@
-![dts-minify-lite](../../.github/assets/dts-minify-lite.jpg)
+![dts-minify-lite](https://raw.githubusercontent.com/felixicaza/dts-minify-lite/HEAD/.github/assets/dts-minify-lite.jpg)
 
 # 🗜️ dts-minify-lite
 
@@ -44,7 +44,6 @@ $ npm install dts-minify-lite
   ```sh
   $ bun add dts-minify-lite
   ```
-
 </details>
 
 ## ⚡ Usage
@@ -75,15 +74,32 @@ console.log(output);
 
 ### ⚙️ Options
 
-The `minify` function accepts an optional second argument for configuration:
+The `.minify()` function parameters.
 
-```js
-const output = minifier.minify(input, { keepJsDocs: true });
+#### `fileText` (string) — required
 
-// /** This is a comment that should be removed
-//  *
-//  */declare namespace Lib{interface Thing{value:string;}}
-```
+The text of the declaration file (.d.ts) to be minified.
+
+#### `options` (object) — optional
+
+An object containing configuration options for the minification process.
+
+#### `options.keepJsDocs` (boolean)
+
+Whether to keep JSDoc comments in the output. If set to `true`, all comments will be kept. Default to `false`.
+
+<details>
+  <summary>Example</summary>
+  <br/>
+
+  ```js
+  const output = minifier.minify(input, { keepJsDocs: true });
+
+  // /** This is a comment that should be removed
+  //  *
+  //  */declare namespace Lib{interface Thing{value:string;}}
+  ```
+</details>
 
 ## 🏆 Credits
 
