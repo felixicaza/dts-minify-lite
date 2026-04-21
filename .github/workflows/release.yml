@@ -102,16 +102,21 @@ jobs:
            if: steps.npm_check.outputs.exists != 'true'
            run: pnpm -C "${{ steps.tag.outputs.pkg_dir }}" build
 
-         - name: Verify tarball includes dist
+         - name: Verify tarball includes dist files
            if: steps.npm_check.outputs.exists != 'true'
            shell: bash
            working-directory: ${{ steps.tag.outputs.pkg_dir }}
            run: |
-              npm pack --dry-run > pack.txt
-              cat pack.txt
+              PACK_OUTPUT="$(npm pack --dry-run 2>&1)"
+              echo "$PACK_OUTPUT"
 
-              if ! grep -q "dist/" pack.txt; then
-                echo "Tarball does not include dist/. Aborting publish."
+              if ! grep -q "dist/index.mjs" <<< "$PACK_OUTPUT"; then
+                echo "Tarball does not include dist/index.mjs. Aborting publish."
+                exit 1
+              fi
+
+              if ! grep -q "dist/index.d.mts" <<< "$PACK_OUTPUT"; then
+                echo "Tarball does not include dist/index.d.mts. Aborting publish."
                 exit 1
               fi
 
