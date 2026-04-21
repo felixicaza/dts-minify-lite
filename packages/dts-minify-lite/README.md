@@ -101,6 +101,10 @@ Whether to keep JSDoc comments in the output. If set to `true`, all comments wil
   ```
 </details>
 
+## 📚 Related Projects
+
+- [`rolldown-plugin-dts-minify-lite`](https://npmx.dev/package/rolldown-plugin-dts-minify-lite): Rolldown plugin for [`dts-minify-lite`](https://npmx.dev/package/dts-minify-lite), a lightweight and zero dependency minifier for TypeScript declaration files (.d.ts).
+
 ## 🏆 Credits
 
 This project is highly inspired by the original [`dts-minify`](https://github.com/dsherret/dts-minify). Thanks for the great work on that project.
