@@ -39,6 +39,12 @@ jobs:
                 exit 1
               fi
 
+              PKG_JSON_NAME="$(node -p "require('./${PKG_DIR}/package.json').name")"
+              if [[ "${PKG_JSON_NAME}" != "${PKG_NAME}" ]]; then
+                echo "Tag package name (${PKG_NAME}) does not match package.json name (${PKG_JSON_NAME})"
+                exit 1
+              fi
+
               echo "pkg_name=${PKG_NAME}" >> "$GITHUB_OUTPUT"
               echo "pkg_version=${PKG_VERSION}" >> "$GITHUB_OUTPUT"
               echo "pkg_dir=${PKG_DIR}" >> "$GITHUB_OUTPUT"
@@ -71,12 +77,6 @@ jobs:
                 exit 1
               fi
 
-         - name: Generate changelog/release notes
-           if: steps.npm_check.outputs.exists != 'true'
-           run: pnpx changelogithub
-           env:
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
          - name: Check if version already exists in npm
            id: npm_check
            shell: bash
@@ -92,9 +92,33 @@ jobs:
                 echo "Version not published yet: ${PKG}@${VER}. Publishing."
               fi
 
+         - name: Generate changelog/release notes
+           if: steps.npm_check.outputs.exists != 'true'
+           run: pnpx changelogithub
+           env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+         - name: Build package
+           if: steps.npm_check.outputs.exists != 'true'
+           run: pnpm -C "${{ steps.tag.outputs.pkg_dir }}" build
+
+         - name: Verify tarball includes dist
+           if: steps.npm_check.outputs.exists != 'true'
+           shell: bash
+           working-directory: ${{ steps.tag.outputs.pkg_dir }}
+           run: |
+              npm pack --dry-run > pack.txt
+              cat pack.txt
+
+              if ! grep -q "dist/" pack.txt; then
+                echo "Tarball does not include dist/. Aborting publish."
+                exit 1
+              fi
+
          - name: Publish package
            if: steps.npm_check.outputs.exists != 'true'
-           run: pnpm --filter "${{ steps.tag.outputs.pkg_name }}" publish --access public --no-git-checks
+           working-directory: ${{ steps.tag.outputs.pkg_dir }}
+           run: pnpm publish --access public --no-git-checks
            env:
               NPM_CONFIG_PROVENANCE: true
 
