@@ -54,11 +54,7 @@ importers:
         specifier: 4.1.4
         version: 4.1.4(@types/node@25.6.0)(jiti@2.6.1)(yaml@2.8.3)
 
-  packages/dts-minify-lite:
-    devDependencies:
-      rolldown-plugin-dts-minify-lite:
-        specifier: workspace:*
-        version: link:../rolldown-plugin-dts-minify-lite
+  packages/dts-minify-lite: {}
 
   packages/rolldown-plugin-dts-minify-lite:
     dependencies:
