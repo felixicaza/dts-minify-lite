@@ -39,7 +39,7 @@
     "prepublishOnly": "pnpm build"
   },
   "dependencies": {
-    "dts-minify-lite": "0.5.0"
+    "dts-minify-lite": "0.5.4"
   },
   "devDependencies": {
     "rolldown": "1.0.0-rc.16"
