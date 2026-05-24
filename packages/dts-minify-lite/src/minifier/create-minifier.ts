@@ -19,6 +19,7 @@ export function createMinifier(): Minifier {
     let result = ''
     let lastWrittenToken: TokenKind | undefined
     let lastHadSeparatingNewLine = false
+    let lastWasSkippedComment = false
     const keepJsDocs = options?.keepJsDocs ?? false
 
     scanner.setText(fileText)
@@ -27,7 +28,10 @@ export function createMinifier(): Minifier {
       const currentToken = scanner.getToken()
       switch (currentToken) {
         case TokenKind.NewLineTrivia:
-          lastHadSeparatingNewLine = true
+          if (!lastWasSkippedComment) {
+            lastHadSeparatingNewLine = true
+          }
+          lastWasSkippedComment = false
           break
         case TokenKind.WhitespaceTrivia:
           break
@@ -35,17 +39,25 @@ export function createMinifier(): Minifier {
           if (isTripleSlashDirective()) {
             writeSingleLineComment()
             lastHadSeparatingNewLine = false
+            lastWasSkippedComment = false
+          } else {
+            lastWasSkippedComment = true
           }
           break
         case TokenKind.MultiLineCommentTrivia:
-          if (keepJsDocs && isJsDoc()) {
+          if (keepJsDocs) {
             writeJsDoc()
-            lastHadSeparatingNewLine = false
+            // Force a structural separator so the next declaration
+            // starts on a new line and keeps comment association.
+            lastHadSeparatingNewLine = true
+            lastWasSkippedComment = false
+          } else {
+            lastWasSkippedComment = true
           }
           break
         default:
           if (
-            currentToken === TokenKind.Identifier
+            isAlphaNumericToken(currentToken)
             && lastHadSeparatingNewLine
             && lastWrittenToken !== TokenKind.SemicolonToken
             && lastWrittenToken !== TokenKind.CloseBraceToken
@@ -59,6 +71,7 @@ export function createMinifier(): Minifier {
 
           writeText(scanner.getTokenText())
           lastHadSeparatingNewLine = false
+          lastWasSkippedComment = false
       }
     }
 
@@ -84,13 +97,17 @@ export function createMinifier(): Minifier {
       }
     }
 
-    function isJsDoc() {
-      const tokenText = scanner.getTokenText()
-      return tokenText.startsWith('/**')
-    }
-
     function writeJsDoc() {
-      writeText(scanner.getTokenText().replace(/^\s+\*/gm, ' *'))
+      const tokenText = scanner.getTokenText()
+
+      if (tokenText.startsWith('/**')) {
+        // Keep existing JSDoc normalization behavior.
+        writeText(tokenText.replace(/^\s+\*/gm, ' *'))
+        return
+      }
+
+      // Keep regular block comments too when keepJsDocs is true
+      writeText(tokenText)
     }
 
     function writeText(text: string) {
