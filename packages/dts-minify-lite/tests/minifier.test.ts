@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { createMinifier } from '../dist/index.mjs'
+import { createMinifier } from '../src/minifier/create-minifier.ts'
 
 const minifier = createMinifier()
 
@@ -38,7 +38,21 @@ describe('minifier behavior', () => {
       '/**',
       ' * hello',
       ' * world',
-      ' */export interface A{}'
+      ' */',
+      'export interface A{}'
+    ].join('\n'))
+  })
+
+  test('keeps regular block comments when keepJsDocs is true and separates declaration with newline', () => {
+    const input = [
+      '/* regular block comment */',
+      'export interface A {}'
+    ].join('\n')
+    const result = minifier.minify(input, { keepJsDocs: true })
+
+    expect(result).toBe([
+      '/* regular block comment */',
+      'export interface A{}'
     ].join('\n'))
   })
 
