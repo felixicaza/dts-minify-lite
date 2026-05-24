@@ -1,9 +1,12 @@
+saveExact: true
 blockExoticSubdeps: true
 autoInstallPeers: false
 minimumReleaseAge: 2880
 trustPolicy: no-downgrade
 strictPeerDependencies: true
 strictDepBuilds: true
+dedupePeers: true
+shellEmulator: true
 
 color: always
 
@@ -13,5 +16,5 @@ packages:
 trustPolicyExclude:
    - "semver@6.3.1"
 
-onlyBuiltDependencies:
-   - simple-git-hooks
+allowBuilds:
+   simple-git-hooks: true
