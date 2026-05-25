@@ -98,4 +98,88 @@ describe('minifier behavior', () => {
 
     expect(result).toBe('interface A{value:string}')
   })
+
+  test('keeps docs before interface members even in compact input', () => {
+    const input = 'interface A{/** member doc */value:string;/* second */next:number;}'
+    const result = minifier.minify(input, { keepJsDocs: true })
+
+    expect(result).toBe([
+      'interface A{',
+      '/** member doc */',
+      'value:string;',
+      '/* second */',
+      'next:number;}'
+    ].join('\n'))
+  })
+
+  test('keeps docs in nested type literals', () => {
+    const input = 'type A={nested:{/** inner */value:string;};};'
+    const result = minifier.minify(input, { keepJsDocs: true })
+
+    expect(result).toBe([
+      'type A={nested:{',
+      '/** inner */',
+      'value:string;};};'
+    ].join('\n'))
+  })
+
+  test('keeps docs in nested namespaces', () => {
+    const input = [
+      'declare namespace A {',
+      '  /** ns doc */',
+      '  export namespace B {',
+      '    /* block doc */',
+      '    export interface C {}',
+      '  }',
+      '}'
+    ].join('\n')
+
+    const result = minifier.minify(input, { keepJsDocs: true })
+
+    expect(result).toBe([
+      'declare namespace A{',
+      '/** ns doc */',
+      'export namespace B{',
+      '/* block doc */',
+      'export interface C{}}}'
+    ].join('\n'))
+  })
+
+  test('handles mixed ///, /* */, /** */ and CRLF/LF sequences', () => {
+    const input = [
+      '/// <reference types="node" />\r\n/* block */',
+      '/** docs */\r\nexport interface A {}'
+    ].join('\n')
+
+    const result = minifier.minify(input, { keepJsDocs: true })
+
+    expect(result).toBe([
+      '/// <reference types="node" />\r\n/* block */',
+      '/** docs */',
+      'export interface A{}'
+    ].join('\n'))
+  })
+
+  test('handles already-minified declaration text without clear separators', () => {
+    const input = '/** top */export interface A{/** member */value:string}'
+    const result = minifier.minify(input, { keepJsDocs: true })
+
+    expect(result).toBe([
+      '/** top */',
+      'export interface A{',
+      '/** member */',
+      'value:string}'
+    ].join('\n'))
+  })
+
+  test('handles consecutive preserved comments before declaration', () => {
+    const input = '/** first *//** second */export interface A{}'
+    const result = minifier.minify(input, { keepJsDocs: true })
+
+    expect(result).toBe([
+      '/** first */',
+      '/** second */',
+      'export interface A{}'
+    ].join('\n'))
+  })
 })

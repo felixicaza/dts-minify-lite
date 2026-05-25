@@ -26,6 +26,7 @@ export function createMinifier(): Minifier {
 
     while (scanner.scan() !== TokenKind.EndOfFileToken) {
       const currentToken = scanner.getToken()
+
       switch (currentToken) {
         case TokenKind.NewLineTrivia:
           if (!lastWasSkippedComment) {
@@ -46,9 +47,8 @@ export function createMinifier(): Minifier {
           break
         case TokenKind.MultiLineCommentTrivia:
           if (keepJsDocs) {
-            writeJsDoc()
-            // Force a structural separator so the next declaration
-            // starts on a new line and keeps comment association.
+            writePreservedMultiLineComment()
+            // Ensure next declaration/member starts on its own line as a leading doc target.
             lastHadSeparatingNewLine = true
             lastWasSkippedComment = false
           } else {
@@ -97,17 +97,27 @@ export function createMinifier(): Minifier {
       }
     }
 
-    function writeJsDoc() {
+    function writePreservedMultiLineComment() {
+      ensureCommentStartsOnOwnLine()
+
       const tokenText = scanner.getTokenText()
 
       if (tokenText.startsWith('/**')) {
-        // Keep existing JSDoc normalization behavior.
+        // Keep JSDoc shape stable while normalizing inner leading spaces.
         writeText(tokenText.replace(/^\s+\*/gm, ' *'))
         return
       }
 
-      // Keep regular block comments too when keepJsDocs is true
+      // Keep regular block comments as well when keepJsDocs is true.
       writeText(tokenText)
+    }
+
+    function ensureCommentStartsOnOwnLine() {
+      if (result.length === 0 || wasLastWrittenNewLine()) {
+        return
+      }
+
+      result += '\n'
     }
 
     function writeText(text: string) {
