@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { isDigit, isHexDigit, isIdentifierPart, isIdentifierStart, isNewLine, isWhitespace } from '../src/scanner/char-utils'
+import { isDigit, isHexDigit, isIdentifierPart, isIdentifierStart, isNewLine, isWhitespace } from '../src/scanner/char-utils.ts'
 
 describe('char-utils', () => {
   test('isNewLine recognizes LF and CR only', () => {

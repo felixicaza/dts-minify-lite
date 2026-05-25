@@ -1,7 +1,7 @@
-import type { Scanner } from './types'
+import type { Scanner } from './types.ts'
 
-import { TokenKind } from '../token-kind'
-import { keywords } from './keywords'
+import { TokenKind } from '../token-kind.ts'
+import { keywords } from './keywords.ts'
 import { isDigit, isHexDigit, isIdentifierPart, isIdentifierStart, isNewLine, isWhitespace } from './char-utils'
 
 export function createSimpleScanner(): Scanner {

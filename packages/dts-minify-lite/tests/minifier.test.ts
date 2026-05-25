@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { createMinifier } from '../src/minifier/create-minifier.ts'
+import { createMinifier } from '../src/minifier/index.ts'
 
 const minifier = createMinifier()
 
