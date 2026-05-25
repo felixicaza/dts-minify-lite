@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
-import { createSimpleScanner } from '../src/scanner/create-simple-scanner'
-import { TokenKind } from '../src/token-kind'
+import { createSimpleScanner } from '../src/scanner/create-simple-scanner.ts'
+import { TokenKind } from '../src/token-kind.ts'
 
 interface ScannedToken {
   kind: TokenKind

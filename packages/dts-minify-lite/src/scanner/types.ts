@@ -1,4 +1,4 @@
-import { TokenKind } from '../token-kind'
+import { TokenKind } from '../token-kind.ts'
 
 export interface Scanner {
   setText(text: string): void

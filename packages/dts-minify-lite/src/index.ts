@@ -1,3 +1,3 @@
-export type { Minifier, MinifyOptions } from './types'
+export type { Minifier, MinifyOptions } from './types.ts'
 
-export { createMinifier } from './minifier/create-minifier'
+export { createMinifier } from './minifier/index.ts'
