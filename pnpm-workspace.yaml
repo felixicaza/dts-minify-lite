@@ -15,6 +15,7 @@ packages:
 
 trustPolicyExclude:
    - "semver@6.3.1"
+   - "tinyexec@1.2.2"
 
 allowBuilds:
    simple-git-hooks: true
