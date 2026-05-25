@@ -10,13 +10,16 @@ A lightweight and zero dependency minifier for TypeScript declaration files (.d.
 
 ### Why?
 
-This library was rewritten to remove the TypeScript dependency found in [`dts-minify`][dts-minify]. This was done to reduce the disk install size and improve performance, as the TypeScript dependency is very weighty.
+This library was rewritten as a lightweight alternative to [`dts-minify`][dts-minify]. The goal is to keep the same core minification behavior for `.d.ts` files while removing the TypeScript dependency, reducing install size, and improving performance.
+
+Compared to [`dts-minify`][dts-minify], this package focuses on being smaller, dependency-free, and easier to adopt in modern build setups, while still preserving the declaration comments that matter for editor experience.
 
 ## ✨ Features
 
 - 🗜️ Minifies TypeScript declaration files (.d.ts) by removing unnecessary whitespace and comments.
 - 🔧 Preserves the functionality of the original declaration files while optimizing their size.
 - ⚡ Zero dependencies, making it lightweight and easy to integrate into any project.
+- 🧠 Keeps JSDoc comments usable for editor experience.
 
 ## 📦 Installation
 
