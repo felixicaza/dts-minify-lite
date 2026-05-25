@@ -1,7 +1,7 @@
 {
   "name": "rolldown-plugin-dts-minify-lite",
   "version": "0.5.1",
-  "description": "Rolldown plugin for dts-minify-lite, a lightweight and zero dependency minifier for TypeScript declaration files (.d.ts).",
+  "description": "🔶 Rolldown plugin for dts-minify-lite, a lightweight and zero dependency minifier for TypeScript declaration files (.d.ts).",
   "keywords": [
     "rolldown",
     "plugin",
@@ -15,7 +15,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/felixicaza/dts-minify-lite.git"
+    "url": "git+https://github.com/felixicaza/dts-minify-lite.git",
+    "directory": "packages/rolldown-plugin-dts-minify-lite"
   },
   "license": "MIT",
   "author": "Felix Icaza <fx.joliett17@gmail.com>",
@@ -35,16 +36,15 @@
   ],
   "scripts": {
     "build": "tsdown",
-    "dev": "tsdown --watch",
-    "prepublishOnly": "pnpm build"
+    "dev": "tsdown --watch"
   },
   "dependencies": {
-    "dts-minify-lite": "0.5.4"
+    "dts-minify-lite": "0.5.6"
   },
   "devDependencies": {
-    "rolldown": "1.0.0-rc.16"
+    "rolldown": "1.0.2"
   },
   "peerDependencies": {
-    "rolldown": ">=1.0.0-rc.1"
+    "rolldown": ">=1.0.0"
   }
 }
