@@ -1,0 +1,74 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`minifier behavior > does not insert newline after colon-separated line break 1`] = `"interface A{value:string}"`;
+
+exports[`minifier behavior > handles already-minified declaration text without clear separators 1`] = `
+"/** top */
+export interface A{
+/** member */
+value:string}"
+`;
+
+exports[`minifier behavior > handles consecutive preserved comments before declaration 1`] = `
+"/** first */
+/** second */
+export interface A{}"
+`;
+
+exports[`minifier behavior > handles mixed ///, /* */, /** */ and CRLF/LF sequences 1`] = `
+"/// <reference types="node" />
+/* block */
+/** docs */
+export interface A{}"
+`;
+
+exports[`minifier behavior > inserts newline when ASI is probable between identifiers 1`] = `
+"interface A{first:A
+second:B}"
+`;
+
+exports[`minifier behavior > keeps docs before interface members even in compact input 1`] = `
+"interface A{
+/** member doc */
+value:string;
+/* second */
+next:number;}"
+`;
+
+exports[`minifier behavior > keeps docs in nested namespaces 1`] = `
+"declare namespace A{
+/** ns doc */
+export namespace B{
+/* block doc */
+export interface C{}}}"
+`;
+
+exports[`minifier behavior > keeps docs in nested type literals 1`] = `
+"type A={nested:{
+/** inner */
+value:string;};};"
+`;
+
+exports[`minifier behavior > keeps jsdocs when keepJsDocs is true and normalizes leading spaces 1`] = `
+"/**
+ * hello
+ * world
+ */
+export interface A{}"
+`;
+
+exports[`minifier behavior > keeps regular block comments when keepJsDocs is true and separates declaration with newline 1`] = `
+"/* regular block comment */
+export interface A{}"
+`;
+
+exports[`minifier behavior > preserves spaces between adjacent alphanumeric tokens 1`] = `"declare interface Box{value:string}"`;
+
+exports[`minifier behavior > preserves triple slash directives and their newline 1`] = `
+"/// <reference types="node" />
+export interface A{}"
+`;
+
+exports[`minifier behavior > removes regular comments and extra whitespace 1`] = `"declare namespace Lib{interface Thing{value:string}}"`;
+
+exports[`minifier behavior > strips jsdocs by default 1`] = `"export interface A{}"`;

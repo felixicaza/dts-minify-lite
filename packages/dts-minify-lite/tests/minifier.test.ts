@@ -14,14 +14,14 @@ describe('minifier behavior', () => {
     ].join('\n')
     const result = minifier.minify(input)
 
-    expect(result).toBe('declare namespace Lib{interface Thing{value:string}}')
+    expect(result).toMatchSnapshot()
   })
 
   test('preserves triple slash directives and their newline', () => {
     const input = '/// <reference types="node" />\r\nexport interface A {}'
     const result = minifier.minify(input)
 
-    expect(result).toBe('/// <reference types="node" />\r\nexport interface A{}')
+    expect(result).toMatchSnapshot()
   })
 
   test('keeps jsdocs when keepJsDocs is true and normalizes leading spaces', () => {
@@ -34,13 +34,7 @@ describe('minifier behavior', () => {
     ].join('\n')
     const result = minifier.minify(input, { keepJsDocs: true })
 
-    expect(result).toBe([
-      '/**',
-      ' * hello',
-      ' * world',
-      ' */',
-      'export interface A{}'
-    ].join('\n'))
+    expect(result).toMatchSnapshot()
   })
 
   test('keeps regular block comments when keepJsDocs is true and separates declaration with newline', () => {
@@ -50,10 +44,7 @@ describe('minifier behavior', () => {
     ].join('\n')
     const result = minifier.minify(input, { keepJsDocs: true })
 
-    expect(result).toBe([
-      '/* regular block comment */',
-      'export interface A{}'
-    ].join('\n'))
+    expect(result).toMatchSnapshot()
   })
 
   test('strips jsdocs by default', () => {
@@ -65,14 +56,14 @@ describe('minifier behavior', () => {
     ].join('\n')
     const result = minifier.minify(input)
 
-    expect(result).toBe('export interface A{}')
+    expect(result).toMatchSnapshot()
   })
 
   test('preserves spaces between adjacent alphanumeric tokens', () => {
     const input = 'declare interface Box { value: string }'
     const result = minifier.minify(input)
 
-    expect(result).toBe('declare interface Box{value:string}')
+    expect(result).toMatchSnapshot()
   })
 
   test('inserts newline when ASI is probable between identifiers', () => {
@@ -84,7 +75,7 @@ describe('minifier behavior', () => {
     ].join('\n')
     const result = minifier.minify(input)
 
-    expect(result).toBe('interface A{first:A\nsecond:B}')
+    expect(result).toMatchSnapshot()
   })
 
   test('does not insert newline after colon-separated line break', () => {
@@ -96,31 +87,21 @@ describe('minifier behavior', () => {
     ].join('\n')
     const result = minifier.minify(input)
 
-    expect(result).toBe('interface A{value:string}')
+    expect(result).toMatchSnapshot()
   })
 
   test('keeps docs before interface members even in compact input', () => {
     const input = 'interface A{/** member doc */value:string;/* second */next:number;}'
     const result = minifier.minify(input, { keepJsDocs: true })
 
-    expect(result).toBe([
-      'interface A{',
-      '/** member doc */',
-      'value:string;',
-      '/* second */',
-      'next:number;}'
-    ].join('\n'))
+    expect(result).toMatchSnapshot()
   })
 
   test('keeps docs in nested type literals', () => {
     const input = 'type A={nested:{/** inner */value:string;};};'
     const result = minifier.minify(input, { keepJsDocs: true })
 
-    expect(result).toBe([
-      'type A={nested:{',
-      '/** inner */',
-      'value:string;};};'
-    ].join('\n'))
+    expect(result).toMatchSnapshot()
   })
 
   test('keeps docs in nested namespaces', () => {
@@ -136,13 +117,7 @@ describe('minifier behavior', () => {
 
     const result = minifier.minify(input, { keepJsDocs: true })
 
-    expect(result).toBe([
-      'declare namespace A{',
-      '/** ns doc */',
-      'export namespace B{',
-      '/* block doc */',
-      'export interface C{}}}'
-    ].join('\n'))
+    expect(result).toMatchSnapshot()
   })
 
   test('handles mixed ///, /* */, /** */ and CRLF/LF sequences', () => {
@@ -153,33 +128,20 @@ describe('minifier behavior', () => {
 
     const result = minifier.minify(input, { keepJsDocs: true })
 
-    expect(result).toBe([
-      '/// <reference types="node" />\r\n/* block */',
-      '/** docs */',
-      'export interface A{}'
-    ].join('\n'))
+    expect(result).toMatchSnapshot()
   })
 
   test('handles already-minified declaration text without clear separators', () => {
     const input = '/** top */export interface A{/** member */value:string}'
     const result = minifier.minify(input, { keepJsDocs: true })
 
-    expect(result).toBe([
-      '/** top */',
-      'export interface A{',
-      '/** member */',
-      'value:string}'
-    ].join('\n'))
+    expect(result).toMatchSnapshot()
   })
 
   test('handles consecutive preserved comments before declaration', () => {
     const input = '/** first *//** second */export interface A{}'
     const result = minifier.minify(input, { keepJsDocs: true })
 
-    expect(result).toBe([
-      '/** first */',
-      '/** second */',
-      'export interface A{}'
-    ].join('\n'))
+    expect(result).toMatchSnapshot()
   })
 })
