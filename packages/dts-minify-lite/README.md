@@ -2,15 +2,15 @@
 
 # 🗜️ dts-minify-lite
 
-[![npm version](https://img.shields.io/npm/v/dts-minify-lite?color=0574ce&logo=npm&logoColor=888888&labelColor=ffffff)](https://npmx.dev/package/dts-minify-lite)
-![GitHub actions workflow tests status](https://img.shields.io/github/actions/workflow/status/felixicaza/dts-minify-lite/tests.yml?color=0574ce&logo=rocket&logoColor=888888&label=tests&labelColor=ffffff)
-[![license](https://img.shields.io/github/license/felixicaza/dts-minify-lite?color=0574ce&logo=googledocs&logoColor=888888&labelColor=ffffff)](https://github.com/felixicaza/dts-minify-lite/blob/main/LICENSE)
+[![npm version](https://img.shields.io/npm/v/dts-minify-lite?color=0574cf&logo=npm&logoColor=888888&labelColor=ffffff)](https://npmx.dev/package/dts-minify-lite)
+[![GitHub actions workflow tests status](https://img.shields.io/github/actions/workflow/status/felixicaza/dts-minify-lite/tests.yml?color=0574cf&logo=rocket&logoColor=888888&label=tests&labelColor=ffffff)](https://github.com/felixicaza/dts-minify-lite/actions/workflows/tests.yml)
+[![license](https://img.shields.io/github/license/felixicaza/dts-minify-lite?color=0574cf&logo=googledocs&logoColor=888888&labelColor=ffffff)](https://github.com/felixicaza/dts-minify-lite/blob/main/LICENSE)
 
 A lightweight and zero dependency minifier for TypeScript declaration files (.d.ts).
 
 ### Why?
 
-This library was rewritten to remove the TypeScript dependency found in [`dts-minify`](https://github.com/dsherret/dts-minify). This was done to reduce the disk install size and improve performance, as the TypeScript dependency is very weighty.
+This library was rewritten to remove the TypeScript dependency found in [`dts-minify`][dts-minify]. This was done to reduce the disk install size and improve performance, as the TypeScript dependency is very weighty.
 
 ## ✨ Features
 
@@ -20,7 +20,7 @@ This library was rewritten to remove the TypeScript dependency found in [`dts-mi
 
 ## 📦 Installation
 
-You can install [`dts-minify-lite`](https://npmx.dev/package/dts-minify-lite) using npm:
+You can install [`dts-minify-lite`][dts-minify-lite] using npm:
 
 ```sh
 $ npm install dts-minify-lite
@@ -48,7 +48,7 @@ $ npm install dts-minify-lite
 
 ## ⚡ Usage
 
-[`dts-minify-lite`](https://npmx.dev/package/dts-minify-lite) uses the same API as [`dts-minify`](https://github.com/dsherret/dts-minify), so you can simply replace the import and remove TypeScript from your dependencies.
+[`dts-minify-lite`][dts-minify-lite] uses the same API as [`dts-minify`][dts-minify], so you can simply replace the import and remove TypeScript from your dependencies.
 
 Example:
 
@@ -57,7 +57,8 @@ import { createMinifier } from "dts-minify-lite";
 
 const minifier = createMinifier();
 
-const input = `/** This is a comment that should be removed
+const input = `/**
+ * This is a comment that should be removed
  *
  */
     declare namespace Lib {
@@ -95,24 +96,29 @@ Whether to keep JSDoc comments in the output. If set to `true`, all comments wil
   ```js
   const output = minifier.minify(input, { keepJsDocs: true });
 
-  // /** This is a comment that should be removed
+  // /**
+  //  * This is a comment that should be removed
   //  *
-  //  */declare namespace Lib{interface Thing{value:string;}}
+  //  */
+  // declare namespace Lib{interface Thing{value:string;}}
   ```
 </details>
 
 ## 📚 Related Projects
 
-- [`rolldown-plugin-dts-minify-lite`](https://npmx.dev/package/rolldown-plugin-dts-minify-lite): Rolldown plugin for [`dts-minify-lite`](https://npmx.dev/package/dts-minify-lite), a lightweight and zero dependency minifier for TypeScript declaration files (.d.ts).
+- [`rolldown-plugin-dts-minify-lite`](https://npmx.dev/package/rolldown-plugin-dts-minify-lite): Rolldown plugin for [`dts-minify-lite`][dts-minify-lite], a lightweight and zero dependency minifier for TypeScript declaration files (.d.ts).
 
 ## 🏆 Credits
 
-This project is highly inspired by the original [`dts-minify`](https://github.com/dsherret/dts-minify). Thanks for the great work on that project.
+This project is highly inspired by the original [`dts-minify`][dts-minify]. Thanks for the great work on that project.
 
 ## 🤝 Contributing
 
-Contributions to this library are welcome! If you have any ideas for improvements or new features, please feel free to open an issue or submit a pull request. I appreciate your help in making [`dts-minify-lite`](https://npmx.dev/package/dts-minify-lite) better for everyone.
+Contributions to this library are welcome! If you have any ideas for improvements or new features, please feel free to open an issue or submit a pull request. I appreciate your help in making [`dts-minify-lite`][dts-minify-lite] better for everyone.
 
 ## 📄 License
 
-This project is licensed under the MIT License. See the [LICENSE](../../LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/felixicaza/dts-minify-lite/blob/main/LICENSE) file for details.
+
+[dts-minify]: https://github.com/dsherret/dts-minify
+[dts-minify-lite]: https://npmx.dev/package/dts-minify-lite
