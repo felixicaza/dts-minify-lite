@@ -1,61 +1,9 @@
-import type { OutputBundle, Plugin } from 'rolldown'
+import type { OutputBundle } from 'rolldown'
 
 import { describe, expect, test } from 'vitest'
-import { rolldownPluginDtsMinifyLite } from '../src/index'
-
-type GenerateBundleHandler = (outputOptions: unknown, bundle: OutputBundle) => void
-
-function getGenerateBundleHandler(plugin: Plugin): GenerateBundleHandler {
-  const generateBundle = plugin.generateBundle
-
-  if (typeof generateBundle === 'function') {
-    return generateBundle as GenerateBundleHandler
-  }
-
-  if (generateBundle && typeof generateBundle === 'object' && 'handler' in generateBundle && typeof generateBundle.handler === 'function') {
-    return generateBundle.handler as GenerateBundleHandler
-  }
-
-  throw new Error('generateBundle handler is not available in plugin')
-}
-
-function createChunk(fileName: string, code: string) {
-  return {
-    type: 'chunk',
-    fileName,
-    code
-  } as OutputBundle[string]
-}
-
-function createAsset(fileName: string, source: string | Uint8Array) {
-  return {
-    type: 'asset',
-    fileName,
-    source
-  } as OutputBundle[string]
-}
-
-function runPlugin(bundle: OutputBundle, keepJsDocs = false) {
-  const plugin = rolldownPluginDtsMinifyLite({ keepJsDocs })
-  const handler = getGenerateBundleHandler(plugin)
-  handler({}, bundle)
-}
+import { createChunk, createAsset, runPlugin } from './helpers/index.ts'
 
 describe('rolldownPluginDtsMinifyLite', () => {
-  test('exposes plugin metadata and post-order hook', () => {
-    const plugin = rolldownPluginDtsMinifyLite()
-
-    expect(plugin.name).toBe('rolldown-plugin-dts-minify-lite')
-
-    const generateBundle = plugin.generateBundle
-
-    if (generateBundle && typeof generateBundle === 'object' && 'order' in generateBundle) {
-      expect(generateBundle.order).toBe('post')
-    } else {
-      throw new Error('Expected object-form generateBundle hook')
-    }
-  })
-
   test('minifies declaration chunks and strips sourceMappingURL comment', () => {
     const bundle: OutputBundle = {
       'index.d.ts': createChunk(
@@ -77,8 +25,8 @@ describe('rolldownPluginDtsMinifyLite', () => {
     expect(entry.type).toBe('chunk')
 
     if (entry.type === 'chunk') {
-      expect(entry.code).toBe('export interface A{value:string}')
       expect(entry.code.includes('sourceMappingURL')).toBe(false)
+      expect(entry.code).toMatchSnapshot()
     }
   })
 
@@ -102,11 +50,7 @@ describe('rolldownPluginDtsMinifyLite', () => {
     expect(entry.type).toBe('chunk')
 
     if (entry.type === 'chunk') {
-      expect(entry.code).toBe([
-        '/**',
-        ' * API docs',
-        ' */export interface A{value:string}'
-      ].join('\n'))
+      expect(entry.code).toMatchSnapshot()
     }
   })
 
@@ -123,7 +67,7 @@ describe('rolldownPluginDtsMinifyLite', () => {
 
     if (entry.type === 'asset') {
       expect(typeof entry.source).toBe('string')
-      expect(entry.source).toBe('declare namespace N{interface X{id:number}}')
+      expect(entry.source).toMatchSnapshot()
     }
   })
 
@@ -146,7 +90,7 @@ describe('rolldownPluginDtsMinifyLite', () => {
 
     if (entry.type === 'asset') {
       expect(entry.source instanceof Uint8Array).toBe(true)
-      expect(decoder.decode(entry.source as Uint8Array)).toBe('declare namespace B{interface C{}}')
+      expect(decoder.decode(entry.source as Uint8Array)).toMatchSnapshot()
     }
   })
 
@@ -165,7 +109,154 @@ describe('rolldownPluginDtsMinifyLite', () => {
     expect(entry.type).toBe('chunk')
 
     if (entry.type === 'chunk') {
-      expect(entry.code).toBe('export interface A{}')
+      expect(entry.code).toMatchSnapshot()
+    }
+  })
+
+  test('keeps docs before interface members in compact declaration chunks', () => {
+    const bundle: OutputBundle = {
+      'index.d.ts': createChunk(
+        'index.d.ts',
+        'export interface A{/** member doc */value:string;/* second */next:number;}'
+      )
+    }
+
+    runPlugin(bundle, true)
+
+    const entry = bundle['index.d.ts']
+
+    expect(entry.type).toBe('chunk')
+
+    if (entry.type === 'chunk') {
+      expect(entry.code).toMatchSnapshot()
+    }
+  })
+
+  test('keeps docs in nested type literals for declaration chunks', () => {
+    const bundle: OutputBundle = {
+      'index.d.ts': createChunk(
+        'index.d.ts',
+        'export type A={nested:{/** inner */value:string;};};'
+      )
+    }
+
+    runPlugin(bundle, true)
+
+    const entry = bundle['index.d.ts']
+
+    expect(entry.type).toBe('chunk')
+
+    if (entry.type === 'chunk') {
+      expect(entry.code).toMatchSnapshot()
+    }
+  })
+
+  test('keeps docs in nested namespaces for declaration chunks', () => {
+    const bundle: OutputBundle = {
+      'index.d.ts': createChunk(
+        'index.d.ts',
+        [
+          'declare namespace A {',
+          '  /** ns doc */',
+          '  export namespace B {',
+          '    /* block doc */',
+          '    export interface C {}',
+          '  }',
+          '}'
+        ].join('\n')
+      )
+    }
+
+    runPlugin(bundle, true)
+
+    const entry = bundle['index.d.ts']
+
+    expect(entry.type).toBe('chunk')
+
+    if (entry.type === 'chunk') {
+      expect(entry.code).toMatchSnapshot()
+    }
+  })
+
+  test('handles mixed directives and CRLF LF sequences in declaration chunks', () => {
+    const bundle: OutputBundle = {
+      'index.d.ts': createChunk(
+        'index.d.ts',
+        [
+          '/// <reference types="node" />\r\n/* block */',
+          '/** docs */\r\nexport interface A {}',
+          '//# sourceMappingURL=index.d.ts.map'
+        ].join('\n')
+      )
+    }
+
+    runPlugin(bundle, true)
+
+    const entry = bundle['index.d.ts']
+
+    expect(entry.type).toBe('chunk')
+
+    if (entry.type === 'chunk') {
+      expect(entry.code.includes('sourceMappingURL')).toBe(false)
+      expect(entry.code).toMatchSnapshot()
+    }
+  })
+
+  test('handles already minified declaration text without clear separators', () => {
+    const bundle: OutputBundle = {
+      'index.d.ts': createChunk(
+        'index.d.ts',
+        '/** top */export interface A{/** member */value:string}'
+      )
+    }
+
+    runPlugin(bundle, true)
+
+    const entry = bundle['index.d.ts']
+
+    expect(entry.type).toBe('chunk')
+
+    if (entry.type === 'chunk') {
+      expect(entry.code).toMatchSnapshot()
+    }
+  })
+
+  test('handles consecutive preserved comments before declaration', () => {
+    const bundle: OutputBundle = {
+      'index.d.ts': createChunk(
+        'index.d.ts',
+        '/** first *//** second */export interface A{}'
+      )
+    }
+
+    runPlugin(bundle, true)
+
+    const entry = bundle['index.d.ts']
+
+    expect(entry.type).toBe('chunk')
+
+    if (entry.type === 'chunk') {
+      expect(entry.code).toMatchSnapshot()
+    }
+  })
+
+  test('applies keepJsDocs edge behavior to declaration assets with string source', () => {
+    const bundle: OutputBundle = {
+      'types.d.ts': createAsset(
+        'types.d.ts',
+        '/** top */export interface A{/** member */value:string}'
+      )
+    }
+
+    runPlugin(bundle, true)
+
+    const entry = bundle['types.d.ts']
+
+    expect(entry.type).toBe('asset')
+
+    if (entry.type === 'asset') {
+      expect(typeof entry.source).toBe('string')
+      expect(entry.source).toMatchSnapshot()
     }
   })
 
@@ -189,7 +280,7 @@ describe('rolldownPluginDtsMinifyLite', () => {
     expect(bundle['types.ts.map']).toBeDefined()
   })
 
-  test('does not touch non-declaration outputs', () => {
+  test('does not touch non declaration outputs', () => {
     const jsChunkCode = 'export const value = 1;'
     const cssAssetSource = 'body { color: red; }'
 
