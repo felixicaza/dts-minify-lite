@@ -3,15 +3,16 @@
 # 🔶 rolldown-plugin-dts-minify-lite
 
 [![npm version](https://img.shields.io/npm/v/rolldown-plugin-dts-minify-lite?color=fb6239&logo=npm&logoColor=888888&labelColor=ffffff)](https://npmx.dev/package/rolldown-plugin-dts-minify-lite)
-![GitHub actions workflow tests status](https://img.shields.io/github/actions/workflow/status/felixicaza/dts-minify-lite/tests.yml?color=fb6239&logo=rocket&logoColor=888888&label=tests&labelColor=ffffff)
+[![GitHub actions workflow tests status](https://img.shields.io/github/actions/workflow/status/felixicaza/dts-minify-lite/tests.yml?color=fb6239&logo=rocket&logoColor=888888&label=tests&labelColor=ffffff)](https://github.com/felixicaza/dts-minify-lite/actions/workflows/tests.yml)
 [![license](https://img.shields.io/github/license/felixicaza/dts-minify-lite?color=fb6239&logo=googledocs&logoColor=888888&labelColor=ffffff)](https://github.com/felixicaza/dts-minify-lite/blob/main/LICENSE)
 
-Rolldown plugin for [`dts-minify-lite`](https://npmx.dev/package/dts-minify-lite), a lightweight and zero dependency minifier for TypeScript declaration files (.d.ts).
+Rolldown plugin for [`dts-minify-lite`][dts-minify-lite], a lightweight and zero dependency minifier for TypeScript declaration files (.d.ts).
 
 ## ✨ Features
 
 - 🗜️ Minifies TypeScript declaration files (.d.ts) by removing unnecessary whitespace and comments.
 - 🔧 Preserves the functionality of the original declaration files while optimizing their size.
+- 🧠 Keeps JSDoc comments usable for editor experience.
 - ⚡ Supports both `rolldown` and `tsdown` for seamless integration into your build process.
 - 🗂️ Supports file extensions: `.d.ts`, `.d.mts`, `.d.cts`.
 - 🗺️ Removes source mapping URLs from declaration files to prevent issues with source maps after minification.
@@ -19,7 +20,7 @@ Rolldown plugin for [`dts-minify-lite`](https://npmx.dev/package/dts-minify-lite
 
 ## 📦 Installation
 
-You can install [`rolldown-plugin-dts-minify-lite`](https://npmx.dev/package/rolldown-plugin-dts-minify-lite) using npm:
+You can install [`rolldown-plugin-dts-minify-lite`][rolldown-plugin] using npm:
 
 ```sh
 $ npm install rolldown-plugin-dts-minify-lite
@@ -106,12 +107,15 @@ Whether to keep JSDoc comments in the output. If set to `true`, all comments wil
 
 ## 📚 Related Projects
 
-- [`dts-minify-lite`](https://npmx.dev/package/dts-minify-lite): A lightweight and zero dependency minifier for TypeScript declaration files (.d.ts).
+- [`dts-minify-lite`][dts-minify-lite]: A lightweight and zero dependency minifier for TypeScript declaration files (.d.ts).
 
 ## 🤝 Contributing
 
-Contributions to this library are welcome! If you have any ideas for improvements or new features, please feel free to open an issue or submit a pull request. I appreciate your help in making [`rolldown-plugin-dts-minify-lite`](https://npmx.dev/package/rolldown-plugin-dts-minify-lite) better for everyone.
+Contributions to this library are welcome! If you have any ideas for improvements or new features, please feel free to open an issue or submit a pull request. I appreciate your help in making [`rolldown-plugin-dts-minify-lite`][rolldown-plugin] better for everyone.
 
 ## 📄 License
 
-This project is licensed under the MIT License. See the [LICENSE](../../LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/felixicaza/dts-minify-lite/blob/main/LICENSE) file for details.
+
+[dts-minify-lite]: https://npmx.dev/package/dts-minify-lite
+[rolldown-plugin]: https://npmx.dev/package/rolldown-plugin-dts-minify-lite
