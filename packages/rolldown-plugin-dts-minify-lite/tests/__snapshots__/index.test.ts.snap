@@ -1,0 +1,65 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`rolldownPluginDtsMinifyLite > applies keepJsDocs edge behavior to declaration assets with string source 1`] = `
+"/** top */
+export interface A{
+/** member */
+value:string}"
+`;
+
+exports[`rolldownPluginDtsMinifyLite > handles already minified declaration text without clear separators 1`] = `
+"/** top */
+export interface A{
+/** member */
+value:string}"
+`;
+
+exports[`rolldownPluginDtsMinifyLite > handles consecutive preserved comments before declaration 1`] = `
+"/** first */
+/** second */
+export interface A{}"
+`;
+
+exports[`rolldownPluginDtsMinifyLite > handles mixed directives and CRLF LF sequences in declaration chunks 1`] = `
+"/// <reference types="node" />
+/* block */
+/** docs */
+export interface A{}"
+`;
+
+exports[`rolldownPluginDtsMinifyLite > keeps docs before interface members in compact declaration chunks 1`] = `
+"export interface A{
+/** member doc */
+value:string;
+/* second */
+next:number;}"
+`;
+
+exports[`rolldownPluginDtsMinifyLite > keeps docs in nested namespaces for declaration chunks 1`] = `
+"declare namespace A{
+/** ns doc */
+export namespace B{
+/* block doc */
+export interface C{}}}"
+`;
+
+exports[`rolldownPluginDtsMinifyLite > keeps docs in nested type literals for declaration chunks 1`] = `
+"export type A={nested:{
+/** inner */
+value:string;};};"
+`;
+
+exports[`rolldownPluginDtsMinifyLite > minifies declaration assets with Uint8Array source and keeps binary format 1`] = `"declare namespace B{interface C{}}"`;
+
+exports[`rolldownPluginDtsMinifyLite > minifies declaration assets with string source 1`] = `"declare namespace N{interface X{id:number}}"`;
+
+exports[`rolldownPluginDtsMinifyLite > minifies declaration chunks and strips sourceMappingURL comment 1`] = `"export interface A{value:string}"`;
+
+exports[`rolldownPluginDtsMinifyLite > respects minifier options passed to the plugin 1`] = `
+"/**
+ * API docs
+ */
+export interface A{value:string}"
+`;
+
+exports[`rolldownPluginDtsMinifyLite > supports CRLF sourceMappingURL removal 1`] = `"export interface A{}"`;
